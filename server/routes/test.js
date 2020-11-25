@@ -39,7 +39,6 @@ async function createTestData(req, res, next) {
       description: 'best farm in the world',
       UserId: 2,
     });
-<<<<<<< HEAD
     // await db.ProductType.create({
     //   name: 'egg',
     //   image:
@@ -51,22 +50,6 @@ async function createTestData(req, res, next) {
     // Add Product Types
     await db.ProductType.bulkCreate(productTypes);
 
-=======
-    await db.ProductType.create({
-      name: 'egg',
-      image:
-        'https://static01.nyt.com/images/2019/02/05/world/05egg/15xp-egg-promo-articleLarge-v2.jpg?quality=90&auto=webp',
-      category: 'dairy/eggs',
-      unit: 'dozen',
-    });
-    await db.ProductType.create({
-      name: 'milk',
-      image:
-        'https://static01.nyt.com/images/2019/02/05/world/05egg/15xp-egg-promo-articleLarge-v2.jpg?quality=90&auto=webp',
-      category: 'dairy/eggs',
-      unit: 'gallon',
-    });
->>>>>>> main
     await db.Product.create({
       name: 'grade A eggs (cage-free)',
       description: 'seriously great eggs',
