@@ -14,8 +14,8 @@ import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 
 const Login = (props) => {
-  // useState hooks
   const [newUser, setRegistration] = useState(false);
+  const { validateUser } = props;
 
   const newUserHandler = (e) => {
     if (newUser === true) {
@@ -37,22 +37,23 @@ const Login = (props) => {
           borderRadius="8px"
           padding="30px"
         >
-          <Link to={'/'}>
-            <CloseButton className="right" />
-          </Link>
           <img
             src="https://i.pinimg.com/originals/13/96/e3/1396e3af2ef86850c7e4cf64540d54ea.png"
             width="225px"
             height="225px"
             margin="15px"
           />
-          <FormControl display="flex" alignItems="left">
+          <FormControl display="flex" alignItems="center">
             <FormLabel htmlFor="signing-up" mb="0">
               New user? Sign up here!
             </FormLabel>
             <Switch id="new-user" onChange={newUserHandler} />
           </FormControl>
-          {newUser === false ? <LoginForm /> : <SignUpForm />}
+          {newUser === false ? (
+            <LoginForm validateUser={validateUser} />
+          ) : (
+            <SignUpForm validateUser={validateUser} />
+          )}
         </Flex>
       </Center>
     </Container>

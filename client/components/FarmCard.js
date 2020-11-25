@@ -5,16 +5,14 @@ import { Link } from 'react-router-dom';
 
 const FarmCard = (props) => {
   const { data } = props;
-  const {
-    name,
-    addressStreet,
-    addressZip,
-    description,
-    image,
-    features,
-  } = data;
+  const { id, name, addressStreet, addressZip, description } = data;
+  let image = data.image;
+  // console.log('image', image);
+  if (image === 'test') {
+    image = 'https://media.qcsupply.com/media/ves/blog/blog-post-smallfarm.jpg';
+  }
   return (
-    <Link to={props.linkTo}>
+    <Link to={`${props.linkTo}/${id}`}>
       <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
         <Image src={image} alt="image" className="farmCardImage" />
 
@@ -23,7 +21,8 @@ const FarmCard = (props) => {
             <Badge borderRadius="full" px="2" colorScheme="teal">
               New
             </Badge>
-            <Box
+          </Box>
+          {/* <Box
               color="gray.500"
               fontWeight="semibold"
               letterSpacing="wide"
@@ -31,10 +30,8 @@ const FarmCard = (props) => {
               textTransform="uppercase"
               ml="2"
             >
-              {features}
-            </Box>
-          </Box>
-
+              Potato
+            </Box> */}
           <Box
             mt="1"
             fontWeight="semibold"
@@ -48,7 +45,7 @@ const FarmCard = (props) => {
           <Box>
             {/* {property.formattedPrice} */}
             <Box as="span" color="gray.600" fontSize="sm">
-              Denver, CO
+              New York, New York
             </Box>
           </Box>
 
@@ -67,6 +64,7 @@ const FarmCard = (props) => {
         </Box> */}
         </Box>
       </Box>
+      {/* </Box> */}
     </Link>
   );
 };

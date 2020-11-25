@@ -82,3 +82,9 @@ thead {
 .mt {
   margin-top: 30px;
 }
+
+.egg-logo {
+  width: 40px;
+  display: inline;
+  /* margin-left: 20px; */
+}

@@ -110,7 +110,12 @@ router.post(
   userController.createUser,
   jwtController.createToken,
   (req, res) => {
-    res.status(200).json(res.locals.accessToken);
+    const user = {};
+    user.id = res.locals.userId;
+    if (res.locals.farmId) {
+      user.farmId = res.locals.farmId;
+    }
+    res.status(200).json(JSON.stringify(user));
   }
 );
 
@@ -133,7 +138,13 @@ router.post(
   userController.verifyUser,
   jwtController.createToken,
   (req, res) => {
-    res.sendStatus(200);
+    const user = {};
+    console.log('res.locals: ', res.locals);
+    user.id = res.locals.user.userId;
+    if (res.locals.user.farmId) {
+      user.farmId = res.locals.user.farmId;
+    }
+    return res.status(200).json(JSON.stringify(user));
   }
 );
 
@@ -145,12 +156,8 @@ router.post(
  *
  */
 
-router.post(
-  '/logout/:userid',
-  userController.logOut,
-   (req, res) => {
-    res.sendStatus(200);
-  }
-);
+router.post('/logout/:userid', userController.logOut, (req, res) => {
+  res.sendStatus(200);
+});
 
 module.exports = router;

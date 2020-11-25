@@ -1,4 +1,4 @@
-const { User } = require('../models/index');
+const { User, Farm } = require('../models/index');
 const db = require('../models/index');
 
 const userController = {};
@@ -7,33 +7,20 @@ const userController = {};
 userController.createUser = async (req, res, next) => {
   // Grab form data off of the request.
   // Check if merchant.
-  if (req.body.farmName) {
-    const {
-      firstName,
-      lastName,
-      streetAddress,
-      zipCode,
-      email,
-      password,
-      userType,
-      farmName,
-      farmStreet,
-      farmZipcode,
-      farmEmail,
-      farmDescription,
-      farmImage,
-    } = req.body;
-  } else {
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      addressStreet,
-      addressZip,
-      accountType,
-    } = req.body;
-  }
+  console.log(req.body);
+  const { firstName, lastName, email, password, accountType } = req.body;
+  const addressZip = req.body.zipCode;
+  const addressStreet = req.body.streetAddress;
+  const {
+    farmName,
+    farmStreet,
+    farmZipcode,
+    farmEmail,
+    farmDescription,
+    farmImage,
+  } = req.body;
+
+  console.log(email);
 
   try {
     // Query the db to check if user already exists.
@@ -46,7 +33,7 @@ userController.createUser = async (req, res, next) => {
     if (dbCheck[0]) return res.sendStatus(403); // User already exists status code.
 
     // Create a user in the database by this name.
-    if (req.body.farmName) {
+    if (!farmName) {
       const user = await User.create({
         firstName,
         lastName,
@@ -56,27 +43,36 @@ userController.createUser = async (req, res, next) => {
         addressZip,
         accountType,
       });
+      res.locals.user = {};
       res.locals.user.email = email;
       res.locals.user.accountType = accountType;
+      res.locals.user.userId = user.id;
       return next();
     } else {
       const user = await User.create({
         firstName,
         lastName,
-        streetAddress,
-        zipCode,
+        addressStreet,
+        addressZip,
         email,
         password,
-        userType,
-        farmName,
-        farmStreet,
-        farmZipcode,
-        farmEmail,
-        farmDescription,
-        farmImage,
+        accountType,
       });
+
+      const farm = await db.Farm.create({
+        name: farmName,
+        addressStreet: farmStreet,
+        addressZip: farmZipcode,
+        email: farmEmail,
+        description: farmDescription,
+        image: farmImage,
+        UserId: user.id,
+      });
+      res.locals.user = {};
       res.locals.user.email = email;
       res.locals.user.accountType = accountType;
+      res.locals.user.farmId = farm.id;
+      res.locals.user.userId = user.id;
       return next();
     }
   } catch (err) {
@@ -102,10 +98,17 @@ userController.verifyUser = async (req, res, next) => {
       },
     });
 
+    console.log(user[0].id);
+    const farm = await db.Farm.findAll({
+      where: { UserId: user[0].id },
+    });
+    console.log(farm);
     if (user) {
       res.locals.user = {};
       res.locals.user.email = email;
       res.locals.user.accountType = user[0].accountType;
+      res.locals.user.userId = user[0].id;
+      res.locals.user.farmId = farm[0].id;
       return next();
     } else {
       return res.statusCode(401).json('Invalid username or password.');
