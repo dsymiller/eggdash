@@ -10,7 +10,6 @@ const FarmerDashboard = (props) => {
     <div className="farmerDashboardContainer">
       <Container maxWidth="95%">
         <DashboardHero />
-        <CreateProduct />
         <Products />
       </Container>
     </div>

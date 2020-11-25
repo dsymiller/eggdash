@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   useDisclosure,
   Button,
@@ -17,45 +17,75 @@ import {
 } from '@chakra-ui/react';
 
 const CreateProduct = (props) => {
-  const productTypes = [
-    {
-      displayName: 'Dairy',
-      value: 'dairy',
-    },
-    {
-      displayName: 'Produce',
-      value: 'produce',
-    },
-    { displayName: 'Meat', value: 'meat' },
-  ];
   const [name, setName] = useState(null);
   const [price, setPrice] = useState(null);
   const [description, setDescription] = useState(null);
   const [productType, setProductType] = useState(null);
+  const [productTypes, setProductTypes] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = React.useRef();
   const finalRef = React.useRef();
 
-  const createNewProductHandler = (e) => {
-    console.log(e);
+  useEffect(() => {
+    fetch('/products/types')
+      .then((response) => response.json())
+      .then((data) => {
+        data.sort((a, b) => {
+          if (a.name > b.name) {
+            return 1;
+          } else if (a.name < b.name) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
+        setProductTypes(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
+  const createNewProductHandler = (e) => {
     onClose();
 
-    // create new product
+    const body = {
+      FarmId: '1',
+      name,
+      description,
+      price,
+      ProductTypeId: productType,
+    };
 
+    // create new product
+    fetch('/products/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+      // .then((response) => response.json())
+      .then(() => {
+        console.log('running...');
+        // console.log();
+        props.fetchAllProducts();
+      })
+      .catch((err) => console.log(err));
     // clear fields
 
     // reload page to get new state?
   };
 
   const setProductTypeHandler = (type) => {
-    console.log(type);
     setProductType(type);
   };
 
   return (
     <React.Fragment>
-      <Button onClick={onOpen}>Add Product</Button>
+      <Button onClick={onOpen} className="mt">
+        Add Product
+      </Button>
       <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
@@ -100,9 +130,14 @@ const CreateProduct = (props) => {
                 placeholder="Select a category"
                 onChange={(e) => setProductTypeHandler(e.target.value)}
               >
-                {productTypes.map((type) => {
-                  return <option value={type.value}>{type.displayName}</option>;
-                })}
+                {productTypes &&
+                  productTypes.map((type) => {
+                    return (
+                      <option key={type.id} value={type.id}>
+                        {type.name}
+                      </option>
+                    );
+                  })}
               </Select>
             </FormControl>
           </ModalBody>

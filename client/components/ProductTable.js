@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useDisclosure } from '@chakra-ui/react';
 
@@ -70,7 +70,7 @@ const data = [
   },
 ];
 
-const ProductTable = () => {
+const ProductTable = (props) => {
   const [product, setProduct] = useState(null);
   const [newName, setNewName] = useState('');
   const [newPrice, setNewPrice] = useState('');
@@ -88,36 +88,72 @@ const ProductTable = () => {
     { displayName: 'Stock', name: 'stock' },
   ];
 
+  // fetchAllProducts();
+
   const editProductHandler = (e, product) => {
-    console.log(product);
     setModal('edit');
     setProduct(product);
     onOpen();
   };
 
   const addSupplyHandler = (e, product) => {
-    console.log(product);
     setModal('stock');
     setProduct(product);
     onOpen();
   };
 
   const updateProductHandler = () => {
-    console.log(product);
-    console.log(newName);
-    console.log(newPrice);
     onClose();
-    // make a post request to update product
 
+    // ProductId, name, description, price, ProductTypeId
+    const updatedProduct = {
+      name: newName,
+      price: newPrice,
+      // description: product.description,
+      ProductId: product.id,
+      ProductTypeId: '1',
+    };
+    // make a post request to update product
+    fetch('/products/update', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedProduct),
+    })
+      .then(() => {
+        setNewName(null);
+        setNewPrice(null);
+        props.fetchAllProducts();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     // then clear newName and newPrice
   };
 
   const addStockHandler = () => {
-    console.log(stock);
     onClose();
 
+    const newSupply = {
+      ProductId: product.id,
+      quantity: stock,
+    };
     // make a post request to add stock
-
+    fetch('/products/supply', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newSupply),
+    })
+      .then(() => {
+        setStock(null);
+        props.fetchAllProducts();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     // then clear stock
   };
 
@@ -133,32 +169,33 @@ const ProductTable = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((el) => {
-            return (
-              <tr key={el.id}>
-                <td>{el.id}</td>
-                <td>{el.name}</td>
-                <td>{el.price}</td>
-                <td>{el.quantity}</td>
-                <td>
-                  <Button
-                    bg="#bedbbb"
-                    margin="15px"
-                    onClick={(e) => editProductHandler(e, el)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    bg="#bedbbb"
-                    margin="15px"
-                    onClick={(e) => addSupplyHandler(e, el)}
-                  >
-                    Add Stock
-                  </Button>
-                </td>
-              </tr>
-            );
-          })}
+          {props.products &&
+            props.products.map((el) => {
+              return (
+                <tr key={el.id}>
+                  <td>{el.id}</td>
+                  <td>{el.name}</td>
+                  <td>{el.price}</td>
+                  <td>{el.stock}</td>
+                  <td>
+                    <Button
+                      bg="#bedbbb"
+                      margin="15px"
+                      onClick={(e) => editProductHandler(e, el)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      bg="#bedbbb"
+                      margin="15px"
+                      onClick={(e) => addSupplyHandler(e, el)}
+                    >
+                      Add Stock
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
 
