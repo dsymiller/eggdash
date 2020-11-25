@@ -5,7 +5,7 @@ const models = require('./models/index');
 // const { sequelize } = require('./models');
 
 const app = express();
-
+const cookieParser = require('cookie-parser');
 const userRouter = require('./routes/user');
 const productsRouter = require('./routes/products');
 const cartRouter = require('./routes/cart');
@@ -16,8 +16,9 @@ const port = 3000;
 // Body Parser Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+app.use(cookieParser());
 // router for customer logins
+
 app.use('/user', userRouter);
 
 // router to access products

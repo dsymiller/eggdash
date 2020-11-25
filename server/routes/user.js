@@ -4,6 +4,7 @@ const db = require('../models/index');
 const router = express.Router();
 
 const userController = require('../controllers/userController');
+const jwtController = require('../controllers/jwtController');
 
 // use to create test data
 // =====================================================================================
@@ -106,8 +107,10 @@ const cutomerData = {
 
 router.post(
   '/signup',
-  /* add controllers */ (req, res) => {
-    res.sendStatus(200);
+  userController.createUser,
+  jwtController.createToken,
+  (req, res) => {
+    res.status(200).json(res.locals.accessToken);
   }
 );
 
@@ -127,7 +130,9 @@ router.post(
 
 router.post(
   '/login',
-  /* add controllers */ (req, res) => {
+  userController.verifyUser,
+  jwtController.createToken,
+  (req, res) => {
     res.sendStatus(200);
   }
 );
@@ -142,7 +147,8 @@ router.post(
 
 router.post(
   '/logout/:userid',
-  /* TODO: add controllers */ (req, res) => {
+  userController.logOut,
+   (req, res) => {
     res.sendStatus(200);
   }
 );
