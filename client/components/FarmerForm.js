@@ -20,12 +20,12 @@ import {
 } from '@chakra-ui/react';
 
 const FarmerForm = () => {
-  const [farmName, setFarmName] = useState('');
-  const [farmStreet, setFarmStreet] = useState('');
-  const [farmZipcode, setFarmZipcode] = useState('');
-  const [farmEmail, setFarmEmail] = useState('');
-  const [farmDescription, setFarmDescription] = useState('');
-  const [farmImage, setFarmImage] = useState('');
+  // const [farmName, setFarmName] = useState('');
+  // const [farmStreet, setFarmStreet] = useState('');
+  // const [farmZipcode, setFarmZipcode] = useState('');
+  // const [farmEmail, setFarmEmail] = useState('');
+  // const [farmDescription, setFarmDescription] = useState('');
+  // const [farmImage, setFarmImage] = useState('');
 
   return (
     <Flex

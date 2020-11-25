@@ -14,6 +14,10 @@ import {
   Header,
   useToast,
   Select,
+  CloseButton,
+  Switch,
+  FormControl,
+  FormLabel,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import FarmerForm from './FarmerForm.js';
@@ -26,6 +30,40 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('');
+  // Farmer Sign Up Data
+  const [farmName, setFarmName] = useState('');
+  const [farmStreet, setFarmStreet] = useState('');
+  const [farmZipcode, setFarmZipcode] = useState('');
+  const [farmEmail, setFarmEmail] = useState('');
+  const [farmDescription, setFarmDescription] = useState('');
+  const [farmImage, setFarmImage] = useState('');
+
+  const handleSubmit = async () => {
+    const request = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        streetAddress,
+        zipCode,
+        email,
+        password,
+        userType,
+        farmName,
+        farmStreet,
+        farmZipcode,
+        farmEmail,
+        farmDescription,
+        farmImage,
+      }),
+    };
+    const response = await ('/users/signup', request);
+    const data = await response.json();
+    console.log(data);
+  };
 
   const toast = useToast();
   return (
@@ -74,28 +112,81 @@ const SignUp = () => {
         placeholder="User Type"
         onChange={(e) => setUserType(e.target.value)}
       >
-        <option value="Merchant">Merchant</option>
-        <option value="Customer">Customer</option>
+        <option value="merchant">Merchant</option>
+        <option value="customer">Customer</option>
       </Select>
-      {userType === 'Merchant' ? <FarmerForm /> : null}
-      <Link to={'/'}>
-        <Button
-          mt="30px"
-          mb="30px"
-          width="sm"
-          onClick={() => {
-            toast({
-              title: 'Signed up.',
-              description: "We've created a new account for you.",
-              status: 'success',
-              duration: 5000,
-              isClosable: true,
-            });
-          }}
+
+      {/* Conditional Toggle Routing */}
+      {userType === 'merchant' ? (
+        <Flex
+          direction="column"
+          align="center"
+          bg="#e8e8e8"
+          color="black"
+          width="450px"
+          borderRadius="8px"
         >
-          Sign Up
-        </Button>
-      </Link>
+          <InputGroup mt="10px" width="sm">
+            <InputLeftAddon children="Farm Name:" />
+            <Input
+              variant="filled"
+              onChange={(e) => setFarmName(e.target.value)}
+            />
+          </InputGroup>
+          <InputGroup mt="10px" width="sm">
+            <InputLeftAddon children="Farm Street Address:" />
+            <Input
+              variant="filled"
+              onChange={(e) => setFarmStreet(e.target.value)}
+            />
+          </InputGroup>
+          <InputGroup mt="10px" width="sm">
+            <InputLeftAddon children="Farm Zipcode:" />
+            <Input
+              variant="filled"
+              onChange={(e) => setFarmZipcode(e.target.value)}
+            />
+          </InputGroup>
+          <InputGroup mt="10px" width="sm">
+            <InputLeftAddon children="Farm Email:" />
+            <Input
+              variant="filled"
+              onChange={(e) => setFarmEmail(e.target.value)}
+            />
+          </InputGroup>
+          <InputGroup mt="10px" width="sm">
+            <InputLeftAddon children="Farm Description:" />
+            <Input
+              variant="filled"
+              onChange={(e) => setFarmDescription(e.target.value)}
+            />
+          </InputGroup>
+          <InputGroup mt="10px" width="sm">
+            <InputLeftAddon children="Farm Image:" />
+            <Input
+              variant="filled"
+              onChange={(e) => setFarmImage(e.target.value)}
+            />
+          </InputGroup>
+        </Flex>
+      ) : null}
+
+      <Button
+        mt="30px"
+        mb="30px"
+        width="sm"
+        onClick={() => {
+          toast({
+            title: 'Signed up.',
+            description: "We've created a new account for you.",
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+        }}
+      >
+        Sign Up
+      </Button>
     </Flex>
   );
 };

@@ -14,7 +14,11 @@ const db = {};
 // const sequelize = new Sequelize(PG_URI);
 
 // local database. uncomment to use
+<<<<<<< HEAD
 const sequelize = new Sequelize('eggdash-test', 'admin', 'password', {
+=======
+const sequelize = new Sequelize('eggdash-test', 'postgres', '1234', {
+>>>>>>> main
   host: 'localhost',
   dialect: 'postgres',
 });

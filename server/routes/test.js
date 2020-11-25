@@ -39,6 +39,7 @@ async function createTestData(req, res, next) {
       description: 'best farm in the world',
       UserId: 2,
     });
+<<<<<<< HEAD
     // await db.ProductType.create({
     //   name: 'egg',
     //   image:
@@ -50,11 +51,27 @@ async function createTestData(req, res, next) {
     // Add Product Types
     await db.ProductType.bulkCreate(productTypes);
 
+=======
+    await db.ProductType.create({
+      name: 'egg',
+      image:
+        'https://static01.nyt.com/images/2019/02/05/world/05egg/15xp-egg-promo-articleLarge-v2.jpg?quality=90&auto=webp',
+      category: 'dairy/eggs',
+      unit: 'dozen',
+    });
+    await db.ProductType.create({
+      name: 'milk',
+      image:
+        'https://static01.nyt.com/images/2019/02/05/world/05egg/15xp-egg-promo-articleLarge-v2.jpg?quality=90&auto=webp',
+      category: 'dairy/eggs',
+      unit: 'gallon',
+    });
+>>>>>>> main
     await db.Product.create({
       name: 'grade A eggs (cage-free)',
       description: 'seriously great eggs',
       price: 300,
-      stock: 0,
+      stock: 50,
       FarmId: 1,
       ProductTypeId: 1,
     });
@@ -62,9 +79,43 @@ async function createTestData(req, res, next) {
       name: 'grade A milk (two percent)',
       description: 'seriously great milk',
       price: 200,
-      stock: 0,
+      stock: 50,
       FarmId: 1,
-      ProductTypeId: 1,
+      ProductTypeId: 2,
+    });
+    await db.Order.create({
+      status: 'fulfilled',
+      FarmId: 1,
+      UserId: 1,
+    });
+    await db.OrderDetail.create({
+      quantity: 1,
+      unitPrice: 300,
+      OrderId: 1,
+      ProductId: 1,
+    });
+    await db.OrderDetail.create({
+      quantity: 2,
+      unitPrice: 300,
+      OrderId: 1,
+      ProductId: 2,
+    });
+    await db.Order.create({
+      status: 'fulfilled',
+      FarmId: 1,
+      UserId: 1,
+    });
+    await db.OrderDetail.create({
+      quantity: 5,
+      unitPrice: 300,
+      OrderId: 2,
+      ProductId: 1,
+    });
+    await db.OrderDetail.create({
+      quantity: 10,
+      unitPrice: 300,
+      OrderId: 2,
+      ProductId: 2,
     });
 
     next();

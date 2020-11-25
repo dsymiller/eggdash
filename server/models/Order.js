@@ -13,6 +13,7 @@ const order = (sequelize, DataTypes) => {
   Order.associate = (models) => {
     Order.hasMany(models.OrderDetail);
     Order.belongsTo(models.User);
+    Order.belongsTo(models.Farm);
   };
 
   return Order;

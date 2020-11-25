@@ -13,9 +13,12 @@ import Farms from './Farms';
 import FarmerDashboard from './FarmerDashboard';
 
 const App = (props) => {
+  const [authenticated, changeAuthenticated] = useState(false);
+
   return (
     <div>
       <Navigation />
+
       <Switch>
         <Route path="/login">
           <Login />

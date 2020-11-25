@@ -25,21 +25,28 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [loggedIn, setLoggedin] = useState(false);
 
-  // handle sign in submit
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   alert(`Email: ${email} & Password: ${password}`);
-  // };
+  const handleSubmit = async () => {
+    // const request = {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ product, quant, userId }),
+    // };
+    // const response = await fetch('/', request);
+    // const data = await response.json();
 
-  // const validate = () => {
-  //   // body prop of username and pass
-  //  fetch('/login', { contnet}).then((res) => res.json())
-  //  .then((data) => {
+    // const email= email;
+    // const password = password;
 
-  //  });
-
-  //  // send post request
-  // }
+    const request = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    };
+    const response = await ('/users/login', request);
+    const data = await response.json();
+  };
 
   return (
     <Flex
@@ -60,12 +67,7 @@ const LoginForm = () => {
         <Input variant="filled" onChange={(e) => setPassword(e.target.value)} />
       </InputGroup>
       <Link to={'/'}>
-        <Button
-          mt="30px"
-          mb="30px"
-          width="sm"
-          onClick={() => setLoggedin(true)}
-        >
+        <Button mt="30px" mb="30px" width="sm" onClick={handleSubmit}>
           Sign In
         </Button>
       </Link>

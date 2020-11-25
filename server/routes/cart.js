@@ -31,7 +31,7 @@ const openOrder = {
 };
 
 const emptyOrder = {
-  orderId: 13,
+  OrderId: 13,
   date: '2020-11-23T21:18:19.000Z',
   status: 'empty',
   orderDetails: [],
@@ -41,8 +41,9 @@ const emptyOrder = {
  */
 
 router.get(
-  '/:userId/:farmId',
-  /* TODO: add controllers */ (req, res) => {
+  '/order/:UserId/:FarmId',
+  cartController.getProductsCart,
+  (req, res) => {
     res.status(200).json(res.locals);
   }
 );
@@ -53,12 +54,10 @@ router.get(
  * What it does: creates a new order detail associated with users' current order
  * sample request data from frontend: 
  const data = {
-  orderId: 14,
-  orderDetail: {
-    productId: 1,
-    quantity: 3,
-    unitPrice: 500,
-  },
+  OrderId: 1
+  ProductId: 1,
+  quantity: 3,
+  unitPrice: 500,
 };
  * sample response data after controllers: 
  * 
@@ -69,12 +68,9 @@ router.get(
  */
 
 // user adds item to cart - 'post' request
-router.post(
-  '/add',
-  /* TODO: add controllers */ (req, res) => {
-    res.atatus(200).json(res.locals);
-  }
-);
+router.post('/add', cartController.addProductsCart, (req, res) => {
+  res.status(200).json(res.locals);
+});
 
 // user deletes item from cart - 'delete' request
 /*
@@ -87,8 +83,9 @@ router.post(
  * 
  */
 router.delete(
-  '/delete/:orderDetailId',
-  /* TODO: add controllers */ (req, res) => {
+  '/delete/:OrderId/:OrderDetailId',
+  cartController.deleteProductCart,
+  (req, res) => {
     res.sendStatus(200);
   }
 );
@@ -99,19 +96,16 @@ router.delete(
  * What it does: updates quantity
  * sample request data from frontend: 
  * const data = {
-  orderDetailId: 12,
+  OrderDetailId: 12,
   quantity: 2,
   };
  * sample response data after controllers: just a status code 200
  * 
  * 
  */
-router.put(
-  '/update',
-  /* TODO: add controllers */ (req, res) => {
-    res.sendStatus(200);
-  }
-);
+router.put('/update', cartController.updateProductCart, (req, res) => {
+  res.sendStatus(200);
+});
 
 // user submits an order
 /*
@@ -124,11 +118,8 @@ router.put(
  *
  */
 
-router.put(
-  '/submit/:orderId',
-  /* TODO: add controllers */ (req, res) => {
-    res.sendStatus(200);
-  }
-);
+router.put('/submit/:OrderId', cartController.checkOut, (req, res) => {
+  res.sendStatus(200);
+});
 
 module.exports = router;
