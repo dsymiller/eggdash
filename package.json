@@ -26,6 +26,7 @@
     "@emotion/styled": "^11.0.0",
     "browserify": "^10.2.4",
     "chart.js": "^2.9.4",
+    "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
     "express": "^4.12.3",
     "framer-motion": "^2.9.4",
