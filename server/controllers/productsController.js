@@ -1,11 +1,9 @@
 const db = require('../models/index');
-const custController = require('./userController');
 
 const productsController = {};
 
 productsController.getProducts = async (req, res, next) => {
   const { FarmId } = req.params;
-
   try {
     const result = await db.Product.findAll({ where: { FarmId } });
     res.locals = result.map((product) => {
@@ -118,6 +116,37 @@ productsController.addSupply = async (req, res, next) => {
   } catch (err) {
     next({
       log: `productsController.addSupply Error: ${err}`,
+      status: 500,
+      message: { err: 'a database error occured' },
+    });
+  }
+};
+
+productsController.getSalesData = async (req, res, next) => {
+  const { FarmId } = req.params;
+  try {
+    const orders = await db.Order.findAll({
+      where: { status: 'fulfilled', FarmId },
+    });
+    const ordersArray = orders.map((order) => {
+      const { id, date } = order;
+      return { id, date, orderDetails: [] };
+    });
+    for (let i = 0; i < ordersArray.length; i += 1) {
+      const { id } = ordersArray[i];
+      const result = await db.OrderDetail.findAll({
+        where: { OrderId: id },
+      });
+      ordersArray[i].orderDetails = result.map((orderDetail) => {
+        const { ProductId, quantity, unitPrice } = orderDetail;
+        return { ProductId, quantity, unitPrice };
+      });
+    }
+    res.locals = ordersArray;
+    next();
+  } catch (err) {
+    next({
+      log: `productsController.getSalesData Error: ${err}`,
       status: 500,
       message: { err: 'a database error occured' },
     });
