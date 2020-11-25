@@ -6,6 +6,7 @@ const userController = {};
 // New user creates an account, signs up.
 userController.createUser = async (req, res, next) => {
   // Grab form data off of the request.
+
   const {
     firstName,
     lastName,
@@ -64,8 +65,9 @@ userController.verifyUser = async (req, res, next) => {
     });
 
     if (user) {
-      res.locals.email = email;
-      res.locals.password = password;
+      res.locals.user = {};
+      res.locals.user.email = email;
+      res.locals.user.accountType = user[0].accountType;
       return next();
     } else {
       return res.statusCode(401).json('Invalid username or password.');
@@ -78,6 +80,11 @@ userController.verifyUser = async (req, res, next) => {
       },
     });
   }
+}
+
+userController.logOut = async (req, res, next) => {
+  res.clearCookie('jwt');
+  next();
 }
 
 
