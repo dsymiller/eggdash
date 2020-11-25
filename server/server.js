@@ -5,7 +5,7 @@ const models = require('./models/index');
 // const { sequelize } = require('./models');
 
 const app = express();
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const userRouter = require('./routes/user');
 const productsRouter = require('./routes/products');
 const cartRouter = require('./routes/cart');

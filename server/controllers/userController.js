@@ -6,16 +6,34 @@ const userController = {};
 // New user creates an account, signs up.
 userController.createUser = async (req, res, next) => {
   // Grab form data off of the request.
-
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    addressStreet,
-    addressZip,
-    accountType,
-  } = req.body;
+  // Check if merchant.
+  if (req.body.farmName) {
+    const {
+      firstName,
+      lastName,
+      streetAddress,
+      zipCode,
+      email,
+      password,
+      userType,
+      farmName,
+      farmStreet,
+      farmZipcode,
+      farmEmail,
+      farmDescription,
+      farmImage,
+    } = req.body;
+  } else {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      addressStreet,
+      addressZip,
+      accountType,
+    } = req.body;
+  }
 
   try {
     // Query the db to check if user already exists.
@@ -28,30 +46,50 @@ userController.createUser = async (req, res, next) => {
     if (dbCheck[0]) return res.sendStatus(403); // User already exists status code.
 
     // Create a user in the database by this name.
-    const user = await User.create({
-      firstName,
-      lastName,
-      email,
-      password,
-      addressStreet,
-      addressZip,
-      accountType,
-    });
-    if (user) {
+    if (req.body.farmName) {
+      const user = await User.create({
+        firstName,
+        lastName,
+        email,
+        password,
+        addressStreet,
+        addressZip,
+        accountType,
+      });
+      res.locals.user.email = email;
+      res.locals.user.accountType = accountType;
+      return next();
+    } else {
+      const user = await User.create({
+        firstName,
+        lastName,
+        streetAddress,
+        zipCode,
+        email,
+        password,
+        userType,
+        farmName,
+        farmStreet,
+        farmZipcode,
+        farmEmail,
+        farmDescription,
+        farmImage,
+      });
       res.locals.user.email = email;
       res.locals.user.accountType = accountType;
       return next();
     }
   } catch (err) {
     // I'll fill this out later.
-    if (err) return next({
-      log: `userController.createUser: ERROR: ${err}.`,
+    if (err)
+      return next({
+        log: `userController.createUser: ERROR: ${err}.`,
         message: {
           err: 'Error occurred in userController.createUser.',
-      },
-    });
+        },
+      });
   }
-}
+};
 
 userController.verifyUser = async (req, res, next) => {
   const { email, password } = req.body;
@@ -61,7 +99,7 @@ userController.verifyUser = async (req, res, next) => {
       where: {
         email,
         password,
-      }
+      },
     });
 
     if (user) {
@@ -73,19 +111,19 @@ userController.verifyUser = async (req, res, next) => {
       return res.statusCode(401).json('Invalid username or password.');
     }
   } catch (err) {
-    if (err) return next({
+    if (err)
+      return next({
         log: `userController.verifyUser: ERROR: ${err}.`,
         message: {
           err: 'Error occurred in userController.verifyUser.',
-      },
-    });
+        },
+      });
   }
-}
+};
 
 userController.logOut = async (req, res, next) => {
   res.clearCookie('jwt');
   next();
-}
-
+};
 
 module.exports = userController;
