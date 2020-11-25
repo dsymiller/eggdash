@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Box,
   Heading,
@@ -19,17 +19,20 @@ import {
   FormControl,
   FormLabel,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import FarmerForm from './FarmerForm.js';
+import UserContext from './UserContext';
 
-const SignUp = () => {
+const SignUp = (props) => {
+  const { validateUser } = props;
+  const history = useHistory();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
   const [zipCode, setZipCode] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('');
+  const [accountType, setAccountType] = useState('');
   // Farmer Sign Up Data
   const [farmName, setFarmName] = useState('');
   const [farmStreet, setFarmStreet] = useState('');
@@ -37,7 +40,7 @@ const SignUp = () => {
   const [farmEmail, setFarmEmail] = useState('');
   const [farmDescription, setFarmDescription] = useState('');
   const [farmImage, setFarmImage] = useState('');
-
+  const [context, setContext] = useContext(UserContext);
   const handleSubmit = async () => {
     const request = {
       method: 'POST',
@@ -51,7 +54,7 @@ const SignUp = () => {
         zipCode,
         email,
         password,
-        userType,
+        accountType,
         farmName,
         farmStreet,
         farmZipcode,
@@ -60,9 +63,20 @@ const SignUp = () => {
         farmImage,
       }),
     };
-    const response = await ('/users/signup', request);
+    console.log(request);
+    // const response = await fetch('/user/signup', request);
+    // console.log(response);
+    // const data = await response.json();
+    // console.log(data);
+    const response = await fetch('/user/signup', request);
     const data = await response.json();
-    console.log(data);
+    if (response.status === 200) {
+      setContext(JSON.parse(data));
+      history.push('/');
+      validateUser();
+    } else {
+      history.push('/login');
+    }
   };
 
   const toast = useToast();
@@ -110,14 +124,14 @@ const SignUp = () => {
         mt="10px"
         variant="filled"
         placeholder="User Type"
-        onChange={(e) => setUserType(e.target.value)}
+        onChange={(e) => setAccountType(e.target.value)}
       >
         <option value="merchant">Merchant</option>
         <option value="customer">Customer</option>
       </Select>
 
       {/* Conditional Toggle Routing */}
-      {userType === 'merchant' ? (
+      {accountType === 'merchant' ? (
         <Flex
           direction="column"
           align="center"
@@ -176,6 +190,7 @@ const SignUp = () => {
         mb="30px"
         width="sm"
         onClick={() => {
+          handleSubmit();
           toast({
             title: 'Signed up.',
             description: "We've created a new account for you.",

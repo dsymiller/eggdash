@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Box,
   Heading,
@@ -9,6 +9,7 @@ import {
   Center,
   InputGroup,
   InputLeftAddon,
+  InputRightElement,
   ButtonGroup,
   Container,
   Header,
@@ -18,25 +19,22 @@ import {
   FormControl,
   FormLabel,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
-const LoginForm = () => {
+import UserContext from './UserContext';
+
+const LoginForm = (props) => {
+  const history = useHistory();
+  const { validateUser } = props;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loggedIn, setLoggedin] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [context, setContext] = useContext(UserContext);
+
+  const handlePass = () => setShowPassword(!showPassword);
 
   const handleSubmit = async () => {
-    // const request = {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ product, quant, userId }),
-    // };
-    // const response = await fetch('/', request);
-    // const data = await response.json();
-
-    // const email= email;
-    // const password = password;
-
     const request = {
       method: 'POST',
       headers: {
@@ -44,8 +42,17 @@ const LoginForm = () => {
       },
       body: JSON.stringify({ email, password }),
     };
-    const response = await ('/users/login', request);
+    const response = await fetch('/user/login', request);
     const data = await response.json();
+    console.log(response);
+    if (response.status === 200) {
+      console.log('data', data);
+      setContext(JSON.parse(data));
+      history.push('/');
+      validateUser();
+    } else {
+      history.push('/login');
+    }
   };
 
   return (
@@ -64,113 +71,22 @@ const LoginForm = () => {
       </InputGroup>
       <InputGroup mt="10px" width="sm">
         <InputLeftAddon children="Password:" pr="20px" />
-        <Input variant="filled" onChange={(e) => setPassword(e.target.value)} />
+        <Input
+          type={showPassword ? 'text' : 'password'}
+          variant="filled"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <InputRightElement width="4.5rem">
+          <Button h="1.75rem" size="sm" onClick={handlePass}>
+            {showPassword ? 'Hide' : 'Show'}
+          </Button>
+        </InputRightElement>
       </InputGroup>
-      <Link to={'/'}>
-        <Button mt="30px" mb="30px" width="sm" onClick={handleSubmit}>
-          Sign In
-        </Button>
-      </Link>
+      <Button mt="30px" mb="30px" width="sm" onClick={handleSubmit}>
+        Sign In
+      </Button>
     </Flex>
   );
 };
 
 export default LoginForm;
-
-/*
-export default function LogIn({ loggedIn }) {
-  const defaultState = {
-    name: '',
-    username: '',
-    password: '',
-  };
-
-  const [state, setState] = useState(defaultState);
-
-  function usernameChange(field) {
-    setState({
-      ...state,
-      username: field.target.value,
-    });
-    console.log(state.username);
-  }
-
-  function passwordChange(field) {
-    setState({
-      ...state,
-      password: field.target.value,
-    });
-    console.log(state.password);
-  }
-
-  function clicked() {
-    let toReturn = loggedIn(state.username, state.password);
-    console.log(toReturn);
-    return toReturn;
-  }
-
-  const toast = useToast();
-  return (
-    <Container maxW="max" maxH="max">
-      <Center pt="40px" pb="800px">
-        <Flex
-          direction="column"
-          align="center"
-          bg="#e8e8e8"
-          color="black"
-          width="450px"
-          borderRadius="8px"
-          padding="30px"
-        >
-          <Link to={'/'}>
-            <CloseButton className="right" />
-          </Link>
-          <img
-            src="https://i.pinimg.com/originals/13/96/e3/1396e3af2ef86850c7e4cf64540d54ea.png"
-            width="225px"
-            height="225px"
-            margin="15px"
-          />
-          <InputGroup mt="10px" width="sm">
-            <InputLeftAddon children="Username:" />
-            <Input variant="filled" onChange={usernameChange} />
-          </InputGroup>
-          <InputGroup mt="10px" width="sm">
-            <InputLeftAddon children="Password:" pr="20px" />
-            <Input variant="filled" onChange={passwordChange} />
-          </InputGroup>
-          <Link to={'/'}>
-            <Button
-              mt="30px"
-              mb="30px"
-              width="sm"
-              onClick={async () => {
-                let result = await clicked();
-                if (result) {
-                  toast({
-                    title: 'Logged in.',
-                    description: 'You are now signed in!',
-                    status: 'success',
-                    duration: 5000,
-                    isClosable: true,
-                  });
-                } else {
-                  toast({
-                    title: 'Unsuccessful log in attempt.',
-                    description: 'Invalid username or password.',
-                    status: 'warning',
-                    duration: 5000,
-                    isClosable: true,
-                  });
-                }
-              }}
-            >
-              Sign In
-            </Button>
-          </Link>
-        </Flex>
-      </Center>
-    </Container>
-  );
-}
-*/

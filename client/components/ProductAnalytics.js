@@ -1,13 +1,40 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 
-import { Doughnut } from 'react-chartjs-2';
+import { Doughnut, Line } from 'react-chartjs-2';
+import UserContext from './UserContext';
 
 const data = {
-  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+  labels: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
   datasets: [
     {
       label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
+      data: [
+        12000,
+        19000,
+        32000,
+        5000,
+        22222,
+        33422,
+        23421,
+        132423,
+        123432,
+        643543,
+        543454,
+        2323,
+      ],
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -30,9 +57,31 @@ const data = {
 };
 
 const ProductAnalytics = (props) => {
+  const [sales, setSales] = useState(null);
+  const [context, setContext] = useContext(UserContext);
+
+  function fetchSales() {
+    console.log(context);
+    // fetch(`/products/sales/${JSON.stringify(context.farmId)}`)
+    fetch(`/products/sales/1`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('data: ', data);
+        cleanseData;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  useEffect(() => {
+    fetchSales();
+  }, []);
+
   return (
     <div className="productAnalytics">
-      <Doughnut data={data} />
+      {/* <Doughnut data={data} /> */}
+      {<Line data={data} />}
     </div>
   );
 };

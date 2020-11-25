@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import { Heading } from '@chakra-ui/react';
 import ProductTable from './ProductTable';
 import CreateProduct from './CreateProduct';
 import ProductAnalytics from './ProductAnalytics';
+import UserContext from './UserContext';
 
 const Products = (props) => {
   const [products, setProducts] = useState(null);
-
+  const [context, setContext] = useContext(UserContext);
   useEffect(() => {
     fetchAllProducts();
   }, []);
 
   const fetchAllProducts = () => {
-    console.log('running fetch');
-    fetch('/products/all/1')
+    // console.log('context: ', context);
+    // console.log('running fetch');
+    // const obj = JSON.parse(context);
+    // console.log(obj);
+    // fetch(`/products/all/${obj.farmId}`)
+    fetch(`/products/all/1`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
