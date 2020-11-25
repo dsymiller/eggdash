@@ -29,6 +29,7 @@ const farm = (sequelize, DataTypes) => {
   Farm.associate = (models) => {
     Farm.hasMany(models.Order);
     Farm.belongsTo(models.User);
+    Farm.hasMany(models.Product);
   };
 
   return Farm;

@@ -66,7 +66,7 @@ router.get('/farms', productsController.getFarms, (req, res) => {
  * sample request data from frontend: just req.params.farmid
  * sample response data after controllers:
  *const data = [
-  {
+  { id: 1,
     date: '2020-11-23T21:18:19.000Z',
     orderDetails: [
       {
@@ -85,12 +85,9 @@ router.get('/farms', productsController.getFarms, (req, res) => {
 ];
  */
 
-router.get(
-  '/sales/:farmId',
-  /* TO DO: add controllers */ (req, res) => {
-    res.status(200).json(res.locals);
-  }
-);
+router.get('/sales/:FarmId', productsController.getSalesData, (req, res) => {
+  res.status(200).json(res.locals);
+});
 
 /**
  * When it is triggered: when a merchant clicks submit to add a new item
