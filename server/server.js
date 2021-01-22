@@ -1,26 +1,34 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const models = require('./models/index');
+// const { sequelize } = require('./models');
 
 const app = express();
-
-const custRouter = require('./routes/cust');
+const cookieParser = require('cookie-parser');
+const userRouter = require('./routes/user');
 const productsRouter = require('./routes/products');
 const cartRouter = require('./routes/cart');
+const testRouter = require('./routes/test');
 
 const port = 3000;
 
 // Body Parser Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+app.use(cookieParser());
 // router for customer logins
-app.use('/cust', custRouter);
+
+app.use('/user', userRouter);
 
 // router to access products
 app.use('/products', productsRouter);
 
 // router for shopping cart
 app.use('/cart', cartRouter);
+
+// router for testing
+app.use('/test', testRouter);
 
 // serve index.html on the route '/'
 app.get('/*', (req, res) => {
@@ -40,8 +48,11 @@ app.use((err, req, res, next) => {
 });
 
 // start server
-app.listen(port, () => {
-  console.log(`Server started on port ${port}.`);
+
+models.sequelize.sync({ force: false }).then(() => {
+  app.listen(port, () => {
+    console.log(`Server started on port ${port}.`);
+  });
 });
 
 module.exports = app;
